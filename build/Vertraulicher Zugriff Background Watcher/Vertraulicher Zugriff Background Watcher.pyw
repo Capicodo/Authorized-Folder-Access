@@ -1,3 +1,71 @@
+"""
+Authorized Folder Access – Background Watcher
+=============================================
+
+Monitors Windows Explorer windows for access to a confidential network folder.  
+When the target folder is closed, this script automatically disconnects all
+active network drives and user sessions to prevent unauthorized access.
+
+Background
+----------
+This utility supports PCs used by multiple people sharing one Windows account.  
+Certain users have specific network credentials granting access to confidential
+directories. Normally, these sessions persist even after the folder is closed,
+leaving the folder accessible to others until the Windows user logs off.
+
+This script ensures that once the confidential folder is no longer open in
+Windows Explorer, all related network sessions are terminated automatically.
+
+Features
+--------
+- Continuously monitors open Windows Explorer windows.
+- Detects if a confidential folder (defined in `config.ini`) is open.
+- Disconnects network drives and user sessions upon folder closure.
+- Displays Windows message notifications when disconnections occur.
+- Runs silently in the background via Windows AutoStart.
+
+Configuration
+-------------
+The configuration file `config.ini` must be located in the same directory as
+this script. Example structure:
+
+    [Settings]
+    folder_path = \\\\server\\confidential\\target_folder
+
+Usage
+-----
+1. Place the folder `Vertraulicher Zugriff Background Watcher` in:
+       C:\\Program Files\\Authorized-Folder-Access\\
+2. Edit the `config.ini` file to set the correct `folder_path`.
+3. Create a shortcut to this script and move it to:
+       C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Startup
+4. Restart the computer — the script will run automatically at login.
+
+Exceptions
+----------
+If the configuration or shell access fails, a Windows message is displayed:
+“❌ FEHLER – Prozess: 'Vertraulicher Zugriff Background Watcher' konnte den zu
+überwachenden Pfad nicht bestimmen. Bitte umgehend bei Mu melden.”
+
+Functions
+---------
+- `readConfig()`: Reads folder path from `config.ini`.
+- `getShell()`: Returns the Shell.Application COM object.
+- `normalize_path(path)`: Normalizes file paths for comparison.
+- `is_target_window_open()`: Checks whether the target folder is currently open.
+- `disconnect()`: Disconnects network drives and active sessions.
+
+Author
+------
+Mu Dell'Oro  
+Version: 1.0.0  
+Date: 16.10.2025  
+GitHub: https://github.com/Capicodo/Authorized-Folder-Access
+
+"""
+
+
+
 import time
 import win32com.client
 import os
