@@ -82,7 +82,7 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE_PATH = os.path.join(base_dir, "config.ini")
 
 
-def readConfig():
+def read_config():
     """Reads the configuration file from CONFIG_FILE_PATH.
 
     Returns:
@@ -95,7 +95,7 @@ def readConfig():
     return folder_path
 
 
-def getShell():
+def get_shell():
     """Gets the Shell Application
 
     Returns:
@@ -122,7 +122,7 @@ def normalize_path(path):
     return os.path.normcase(os.path.normpath(path))
 
 
-target_window_found = False
+target_window_is_open = False
 
 
 def is_target_window_open():
@@ -158,8 +158,8 @@ def is_target_window_open():
 
 
 try:
-    folder_path = readConfig()
-    shell = getShell()
+    folder_path = read_config()
+    shell = get_shell()
 except Exception as e:
     message = (
         "❌ FEHLER – Prozess: 'Vertraulicher Zugriff Background Watcher' "
@@ -204,12 +204,12 @@ def disconnect():
 while True:
     if is_target_window_open():
         print("Target window found")
-        target_window_found = True
+        target_window_is_open = True
 
     else:
         print("Target window not found")
-        if target_window_found:
+        if target_window_is_open:
             print("Explorer window was closed.")
-            target_window_found = False
+            target_window_is_open = False
             disconnect()
     time.sleep(0.33333333333333333)
