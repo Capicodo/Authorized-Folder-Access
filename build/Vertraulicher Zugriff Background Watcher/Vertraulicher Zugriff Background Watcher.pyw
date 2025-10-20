@@ -30,15 +30,15 @@ The configuration file `config.ini` must be located in the same directory as
 this script. Example structure:
 
     [Settings]
-    folder_path = \\\\server\\confidential\\target_folder
+    folder_path = \\mutest\MuTest
 
 Usage
 -----
 1. Place the folder `Vertraulicher Zugriff Background Watcher` in:
-       C:\\Program Files\\Authorized-Folder-Access\\
+       C:\Program Files
 2. Edit the `config.ini` file to set the correct `folder_path`.
 3. Create a shortcut to this script and move it to:
-       C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Startup
+       C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
 4. Restart the computer — the script will run automatically at login.
 
 Exceptions
