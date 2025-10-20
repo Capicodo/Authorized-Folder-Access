@@ -66,21 +66,24 @@ GitHub: https://github.com/Capicodo/Authorized-Folder-Access
 
 
 
+import configparser
+import os
+import subprocess
 import time
 import win32com.client
-import os
 
-import subprocess
-
-import configparser
 
 # ---------------------------
 # Configuration (INI)
 # ---------------------------
+
 """The Path of the python file gets joined, so config.ini can be found relative to the python file"""
 base_dir = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE_PATH = os.path.join(base_dir, "config.ini")
 
+# ---------------------------
+# Functions
+# ---------------------------
 
 def read_config():
     """Reads the configuration file from CONFIG_FILE_PATH.
@@ -150,7 +153,7 @@ def is_target_window_open():
                     # Fallback: get path from the first item in the folder
                     current_path = folder.Items().Item().Path
                 print(current_path)
-                if normalize_path(current_path).startswith(normalized_target):
+                if normalize_path(current_path).startswith(normalized_path):
                     return True
         except Exception:
             pass
@@ -169,7 +172,7 @@ except Exception as e:
     subprocess.run(["msg", "*", message], check=True)
 
 
-normalized_target = normalize_path(folder_path)
+normalized_path = normalize_path(folder_path)
 
 # Wait until window is closed
 print(f"Checking for Explorer window {folder_path} behaviour")
@@ -200,7 +203,10 @@ def disconnect():
         print(f"An error occurred: {e}")
 
 
+# ---------------------------
 # Main Loop
+# ---------------------------
+
 while True:
     if is_target_window_open():
         print("Target window found")
