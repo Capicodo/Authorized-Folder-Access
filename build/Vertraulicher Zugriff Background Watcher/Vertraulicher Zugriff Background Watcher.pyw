@@ -2,13 +2,13 @@
 Authorized Folder Access – Background Watcher
 =============================================
 
-Monitors Windows Explorer windows for access to a confidential network folder.  
+Monitors Windows Explorer windows for access to a confidential network folder.
 When the target folder is closed, this script automatically disconnects all
 active network drives and user sessions to prevent unauthorized access.
 
 Background
 ----------
-This utility supports PCs used by multiple people sharing one Windows account.  
+This utility supports PCs used by multiple people sharing one Windows account.
 Certain users have specific network credentials granting access to confidential
 directories. Normally, these sessions persist even after the folder is closed,
 leaving the folder accessible to others until the Windows user logs off.
@@ -57,14 +57,12 @@ Functions
 
 Author
 ------
-Mu Dell'Oro  
-Version: 1.0.0  
-Date: 16.10.2025  
+Mu Dell'Oro
+Version: 1.0.0
+Date: 16.10.2025
 GitHub: https://github.com/Capicodo/Authorized-Folder-Access
 
 """
-
-
 
 import configparser
 import os
@@ -81,9 +79,11 @@ import win32com.client
 base_dir = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE_PATH = os.path.join(base_dir, "config.ini")
 
+CHECK_INTERVAL = 0.333
 # ---------------------------
 # Functions
 # ---------------------------
+
 
 def read_config():
     """Reads the configuration file from CONFIG_FILE_PATH.
@@ -125,57 +125,35 @@ def normalize_path(path):
     return os.path.normcase(os.path.normpath(path))
 
 
-target_window_is_open = False
-
-
-def is_target_window_open():
+def is_target_window_open(shell, normalized_path):
     """Checks whether a target folder window is currently open.
 
     Iterates through all open Windows Explorer windows and determines
     if any of them correspond to a folder whose path starts with the
     specified target path.
 
+    Args:
+        shell (win32com.client.CDispatch): The Shell.Application COM object.
+        normalized_path (str): The normalized path of the target folder.
+
     Returns:
         bool: True if a folder window with a path starting with the
         target path is open, otherwise False.
     """
-
     windows = shell.Windows()
-
     for window in windows:
         try:
             if window and window.Document and hasattr(window.Document, "Folder"):
                 folder = window.Document.Folder
-                # Try to get path via Self first
                 try:
                     current_path = folder.Self.Path
                 except Exception:
-                    # Fallback: get path from the first item in the folder
                     current_path = folder.Items().Item().Path
-                print(current_path)
                 if normalize_path(current_path).startswith(normalized_path):
                     return True
         except Exception:
             pass
     return False
-
-
-try:
-    folder_path = read_config()
-    shell = get_shell()
-except Exception as e:
-    message = (
-        "❌ FEHLER – Prozess: 'Vertraulicher Zugriff Background Watcher' "
-        "konnte den zu überwachenden Pfad nicht bestimmen. \n"
-        "❗Bitte umgehend bei Mu melden: calvin.delloro@piluweri.de"
-    )
-    subprocess.run(["msg", "*", message], check=True)
-
-
-normalized_path = normalize_path(folder_path)
-
-# Wait until window is closed
-print(f"Checking for Explorer window {folder_path} behaviour")
 
 
 def disconnect():
@@ -207,15 +185,38 @@ def disconnect():
 # Main Loop
 # ---------------------------
 
-while True:
-    if is_target_window_open():
-        print("Target window found")
-        target_window_is_open = True
 
-    else:
-        print("Target window not found")
-        if target_window_is_open:
-            print("Explorer window was closed.")
-            target_window_is_open = False
-            disconnect()
-    time.sleep(0.33333333333333333)
+def main():
+    """Main monitoring loop that watches the target folder three times per second"""
+    try:
+        folder_path = read_config()
+        shell = get_shell()
+    except Exception:
+        message = (
+            "❌ FEHLER – Prozess: 'Vertraulicher Zugriff Background Watcher' "
+            "konnte den zu überwachenden Pfad nicht bestimmen. \n"
+            "❗Bitte umgehend bei Mu melden: calvin.delloro@piluweri.de"
+        )
+        subprocess.run(["msg", "*", message], check=True)
+        return
+
+    normalized_path = normalize_path(folder_path)
+    target_window_is_open = False
+
+    print(f"Checking for Explorer window {folder_path} behaviour")
+
+    while True:
+        if is_target_window_open(shell, normalized_path):
+            print("Target window found")
+            target_window_is_open = True
+        else:
+            print("Target window not found")
+            if target_window_is_open:
+                print("Explorer window was closed.")
+                target_window_is_open = False
+                disconnect()
+        time.sleep(CHECK_INTERVAL)
+
+
+if __name__ == "__main__":
+    main()
