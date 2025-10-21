@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Ship Dist Folder",
+            "type": "shell",
+            "command": "cmd.exe",
+            "args": [
+                "/c",
+                "xcopy /E /I /Y \"dist\" \"\\\\hokkaido\\Daten\\IT\\Mu\\Tools\\VertraulicherZugriffBackgroundWatcher\\dist\""
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}

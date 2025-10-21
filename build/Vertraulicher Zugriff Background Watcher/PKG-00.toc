@@ -99,9 +99,6 @@
   ('Pythonwin\\mfc140u.dll',
    'C:\\Users\\Piluweri\\AppData\\Roaming\\Python\\Python313\\site-packages\\Pythonwin\\mfc140u.dll',
    'BINARY'),
-  ('config.ini',
-   'C:\\Github Repositories\\Authorized-Folder-Access\\src\\config.ini',
-   'DATA'),
   ('base_library.zip',
    'C:\\Github Repositories\\Authorized-Folder-Access\\build\\Vertraulicher '
    'Zugriff Background Watcher\\base_library.zip',

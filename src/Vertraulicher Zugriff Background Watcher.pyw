@@ -67,6 +67,7 @@ GitHub: https://github.com/Capicodo/Authorized-Folder-Access
 import configparser
 import os
 import subprocess
+import sys
 import time
 import win32com.client
 
@@ -76,7 +77,13 @@ import win32com.client
 # ---------------------------
 
 """The Path of the python file gets joined, so config.ini can be found relative to the python file"""
-base_dir = os.path.dirname(os.path.abspath(__file__))
+if getattr(sys, "frozen", False):
+    # Running as PyInstaller .exe
+    base_dir = os.path.dirname(sys.executable)
+else:
+    # Running as .py script
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
 CONFIG_FILE_PATH = os.path.join(base_dir, "config.ini")
 
 CHECK_INTERVAL = 0.333
@@ -92,6 +99,15 @@ def read_config():
         folder_path (str): The normalized folder path.
     """
     config = configparser.ConfigParser()
+
+    if not os.path.exists(CONFIG_FILE_PATH):
+        message = (
+            "❌ FEHLER – 'config.ini' fehlt. "
+            "Bitte den Pfad zum zu überwachenden Ordner in config.ini setzen."
+        )
+        subprocess.run(["msg", "*", message], check=True)
+        sys.exit(1)
+
     config.read(CONFIG_FILE_PATH)
     folder_path = config["Settings"]["folder_path"]
 

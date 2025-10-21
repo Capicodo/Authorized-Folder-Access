@@ -5,7 +5,7 @@ a = Analysis(
     ['src\\Vertraulicher Zugriff Background Watcher.pyw'],
     pathex=[],
     binaries=[],
-    datas=[('.\\src\\config.ini', '.')],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
