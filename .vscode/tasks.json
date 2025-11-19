@@ -2,12 +2,14 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Ship Dist Folder",
+            "label": "Ship Vertraulicher Zugriff Background Watcher",
             "type": "shell",
-            "command": "cmd.exe",
+            "command": "xcopy",
             "args": [
-                "/c",
-                "xcopy /E /I /Y \"dist\" \"\\\\hokkaido\\Daten\\IT\\Mu\\Tools\\VertraulicherZugriffBackgroundWatcher\\dist\""
+                "/E",
+                "/Y",
+                "dist\\*",
+                "\\\\hokkaido\\Daten\\IT\\Mu\\Tools\\Vertraulicher Zugriff Background Watcher\\"
             ],
             "group": {
                 "kind": "build",
